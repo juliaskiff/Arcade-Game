@@ -1,5 +1,7 @@
-var count = 0;
-// Enemy class
+// Grab the congratulation window
+const modal = document.getElementById('modal-win');
+
+// Enemy class: image, position and speed
 const Enemy = function(x, y) {
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
@@ -7,19 +9,16 @@ const Enemy = function(x, y) {
     this.speed = Math.floor((Math.random() * 200) + 100);
 };
 
-// Update the enemy's position, required method for game
+// Update the enemy's position
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
     if (this.x <= 505) {
         this.x += this.speed * dt;
      } else {
         this.x = -100;
      };
+     // if the player and the enemy collide:
     if(this.x < player.x + 50 && this.x > player.x - 50 && this.y < player.y + 50 && this.y > player.y - 50) {
-        count = 0;
         player.reset();
     }
 };
@@ -29,26 +28,30 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Player class
 
+// Player class: image and initial position
 const Player = function(x, y) {
     this.sprite = 'images/char-princess-girl.png';
     this.x = 200;
     this.y = 400;
 };
-
+// Draw the player on the screen
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Player's position update
 Player.prototype.update = function() {
+    // If the player reaches the water
     if (this.y < 0 ) {
+        modal.style.display = "block";
         this.reset();
-        count++;
     };
 };
 
+// Set player's movements
 Player.prototype.handleInput = function (keyPress){
+    modal.style.display = "none";
     if (keyPress == 'left' && this.x > 0) {
         this.x -= 100;
     }
@@ -63,13 +66,14 @@ Player.prototype.handleInput = function (keyPress){
     };
 }; 
 
+// Reset player's position
 Player.prototype.reset = function() {
    this.x = 200;
    this.y = 400;
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
+// Instantiate objects
+// Enemies array
 const allEnemies = [];
 (function displayEnemies() {
     allEnemies.push(new Enemy(0, 50));
@@ -77,7 +81,7 @@ const allEnemies = [];
     allEnemies.push(new Enemy(0, 230));
 }());
 
-// Place the player object in a variable called player
+// Player object
 player = new Player();
 
 // This listens for key presses and sends the keys to your
